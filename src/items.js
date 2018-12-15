@@ -17,3 +17,5 @@ function loadAllItems() {
     price: 2.00
   }];
 }
+var allItems=loadAllItems();
+console.log(allItems);
