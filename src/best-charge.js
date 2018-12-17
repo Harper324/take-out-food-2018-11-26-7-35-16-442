@@ -1,21 +1,17 @@
 function bestCharge(selectedItems) {
   getItemIdQuality(selectedItems);
-  var itemIdPriceQuality = getItemIdPriceQuality(selectedItems);
-  var reduceMoneyPrice = getReduceMoneyPrice(itemIdPriceQuality);
-  var halfDiscountPrice = getHalfDiscountPrice(itemIdPriceQuality);
+  let itemIdPriceQuality = getItemIdPriceQuality(selectedItems);
+  let reduceMoneyPrice = getReduceMoneyPrice(itemIdPriceQuality);
+  let halfDiscountPrice = getHalfDiscountPrice(itemIdPriceQuality);
 
-  var result = compareTwoPrice(reduceMoneyPrice, halfDiscountPrice, itemIdPriceQuality);
+  let result = compareTwoPrice(reduceMoneyPrice, halfDiscountPrice, itemIdPriceQuality);
   return result;
 }
 function getItemIdPriceQuality(selectedItems) {
-  var itemIdAndQuality = getItemIdQuality(selectedItems);
-  var itemIdPriceQuality = itemIdAndQuality.map(function (element) {
-    element.price = (loadAllItems().find(function (ele) {
-      return element.id === ele.id;
-    })).price;
-    element.name = (loadAllItems().find(function (ele) {
-      return element.id === ele.id;
-    })).name;
+  let itemIdAndQuality = getItemIdQuality(selectedItems);
+  let itemIdPriceQuality = itemIdAndQuality.map(function (element) {
+    element.price = (loadAllItems().find(ele => element.id === ele.id)).price;
+    element.name = (loadAllItems().find(ele => element.id === ele.id)).name;
     return element;
 
   });
@@ -23,7 +19,7 @@ function getItemIdPriceQuality(selectedItems) {
 }
 function getItemIdQuality(selectedItems) {
   let itemIdAndQuality = selectedItems.map(function (element) {
-    var idAndQuality = {
+    let idAndQuality = {
       id: element.slice(0, 8),
       quality: element.slice(-1)
     };
@@ -33,13 +29,9 @@ function getItemIdQuality(selectedItems) {
 }
 
 function getReduceMoneyPrice(itemIdPriceQuality) {
-  var itemPrice = itemIdPriceQuality.map(function (element) {
-    return element.price * element.quality;
-  });
-  var totalPrice = itemPrice.reduce(function (a, b) {
-    return a + b;
-  });
-  var reduceMoneyPrice = {};
+  let itemPrice = itemIdPriceQuality.map(element => element.price * element.quality);
+  let totalPrice = itemPrice.reduce((a, b) => a + b);
+  let reduceMoneyPrice = {};
   if (totalPrice > 30) {
     reduceMoneyPrice.总计 = totalPrice - 6;
   } else {
@@ -59,11 +51,9 @@ function loadPromotions() {
 
 function getHalfDiscountPrice(itemIdPriceQuality) {
 
-  var discountItems = (itemIdPriceQuality.filter(function (element) {
-    return (loadPromotions()[1].items.includes(element.id));
-  })).map(x => x.name);
+  let discountItems = (itemIdPriceQuality.filter(element => loadPromotions()[1].items.includes(element.id))).map(x => x.name);
 
-  var itemPrice = itemIdPriceQuality.map(function (element) {
+  let itemPrice = itemIdPriceQuality.map(function (element) {
     if (loadPromotions()[1].items.includes(element.id)) {
       return element.price * element.quality / 2;
     } else {
@@ -71,17 +61,20 @@ function getHalfDiscountPrice(itemIdPriceQuality) {
     }
 
   });
-  var totalPrice = itemPrice.reduce(function (a, b) {
-    return a + b;
-  });
-  var halfDiscountPrice = {};
+
+  let totalPrice = itemPrice.reduce((a, b) => a + b);
+
+  let halfDiscountPrice = {};
   if (discountItems) {
     halfDiscountPrice.半价菜品 = discountItems.join();
     halfDiscountPrice.总计 = totalPrice;
+
   } else {
     halfDiscountPrice.总计 = totalPrice;
+
   }
   return halfDiscountPrice;
+
 }
 function loadPromotions() {
   return [{
@@ -94,20 +87,20 @@ function loadPromotions() {
 
 function compareTwoPrice(reduceMoneyPrice, halfDiscountPrice, itemIdPriceQuality) {
   var itemPrice = [];
-  for (var i = 0; i < itemIdPriceQuality.length; i++) {
+  for (let i = 0; i < itemIdPriceQuality.length; i++) {
     itemPrice[i] = itemIdPriceQuality[i].name + ' × ' + itemIdPriceQuality[i].quality + ' = ' + itemIdPriceQuality[i].quality * itemIdPriceQuality[i].price + '元';
   }
   itemPrice = itemPrice.join('\n');
-  var savedMoney = reduceMoneyPrice.总计 + 6 - halfDiscountPrice.总计;
-  var order;
+  let savedMoney = reduceMoneyPrice.总计 + 6 - halfDiscountPrice.总计;
+  let order;
   if (reduceMoneyPrice.总计 <= halfDiscountPrice.总计 && halfDiscountPrice.半价菜品) {
-    order = '============= 订单明细 =============\n' + itemPrice + '\n' + '-----------------------------------' + '\n' + '使用优惠：' + '\n' + '满30减6元，省6元' + '\n' + '-----------------------------------' + '\n' + '总计：' + reduceMoneyPrice.总计 + '元' + '\n' + '===================================';
+    order = '============= 订单明细 =============\n' + itemPrice + '\n' + '-----------------------------------' + '\n' + '使用优惠：' + '满30减6元，省6元' + '\n' + '-----------------------------------' + '\n' + '总计：' + reduceMoneyPrice.总计 + '元' + '\n' + '===================================';
 
   } else if (reduceMoneyPrice.总计 > halfDiscountPrice.总计) {
     order = '============= 订单明细 =============\n' + itemPrice + '\n' + '-----------------------------------' + '\n' + '使用优惠：' + '\n' + '指定菜品半价（' + halfDiscountPrice.半价菜品 + '), 省' + savedMoney + '元' + '\n' + '-----------------------------------' + '\n' + '总计：' + halfDiscountPrice.总计 + '元' + '\n' + '===================================';
 
   } else {
-    order = '============= 订单明细 =============\n' + itemPrice + '\n' + '-----------------------------------' + '\n' + '总计：' + reduceMoneyPrice.总计 + '元' + '\n' + '===================================';
+    order = '==============订单明细==============\n' + itemPrice + '\n' + '-----------------------------------' + '\n' + '总计：' + reduceMoneyPrice.总计 + '元' + '\n' + '==================================';
   }
   return order;
 }

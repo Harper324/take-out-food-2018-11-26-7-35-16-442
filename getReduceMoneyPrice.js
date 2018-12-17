@@ -1,11 +1,7 @@
 function getReduceMoneyPrice(itemIdPriceQuality) {
-    var itemPrice = itemIdPriceQuality.map(function (element) {
-        return element.price * element.quality;
-    });
-    var totalPrice = itemPrice.reduce(function (a, b) {
-        return a + b;
-    });
-    var reduceMoneyPrice={};
+    let itemPrice = itemIdPriceQuality.map(element => element.price * element.quality);
+    let totalPrice = itemPrice.reduce((a, b) => a + b);
+    let reduceMoneyPrice={};
     if (totalPrice > 30) {
         reduceMoneyPrice.总计 =  totalPrice-6;
     } else {
