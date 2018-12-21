@@ -35,15 +35,6 @@ function getReduceMoneyPrice(itemIdPriceQuality) {
   return { totalPrice };
 }
 
-function loadPromotions() {
-  return [{
-    type: '满30减6元'
-  }, {
-    type: '指定菜品半价',
-    items: ['ITEM0001', 'ITEM0022']
-  }];
-}
-
 function getHalfDiscountPrice(itemIdPriceQuality) {
 
   let discountItems = (itemIdPriceQuality.filter(element => loadPromotions()[1].items.includes(element.id))).map(x => x.name);
@@ -68,24 +59,13 @@ function getHalfDiscountPrice(itemIdPriceQuality) {
 }
 
 
-function loadPromotions() {
-  return [{
-    type: '满30减6元'
-  }, {
-    type: '指定菜品半价',
-    items: ['ITEM0001', 'ITEM0022']
-  }];
-}
-
 function compareTwoPrice(reduceMoneyPrice, halfDiscountPrice, itemIdPriceQuality) {
-var itemPrice = [];
-for (let i = 0; i < itemIdPriceQuality.length; i++) {
-itemPrice[i] = itemIdPriceQuality[i].name + ' x ' + itemIdPriceQuality[i].quality + ' = ' + itemIdPriceQuality[i].quality * itemIdPriceQuality[i].price + '元';
-}
-itemPrice = itemPrice.join('\n');
-let savedMoney = reduceMoneyPrice.totalPrice + 6 - halfDiscountPrice.totalPrice;
-if (reduceMoneyPrice.totalPrice <= halfDiscountPrice.totalPrice && halfDiscountPrice.halfItems) {
-return `
+  var itemPrice = itemIdPriceQuality.map(element => element.name + ' x ' + element.quality + ' = ' +
+    element.quality * element.price + '元')
+  itemPrice = itemPrice.join('\n');
+  let savedMoney = reduceMoneyPrice.totalPrice + 6 - halfDiscountPrice.totalPrice;
+  if (reduceMoneyPrice.totalPrice <= halfDiscountPrice.totalPrice && halfDiscountPrice.halfItems) {
+    return `
 ============= 订餐明细 =============
 ${itemPrice}
 -----------------------------------
@@ -95,8 +75,8 @@ ${itemPrice}
 总计：${reduceMoneyPrice.totalPrice}元
 ===================================`;
 
-} else if (reduceMoneyPrice.totalPrice > halfDiscountPrice.totalPrice) {
-return `
+  } else if (reduceMoneyPrice.totalPrice > halfDiscountPrice.totalPrice) {
+    return `
 ============= 订餐明细 =============
 ${itemPrice}
 -----------------------------------
@@ -106,14 +86,14 @@ ${itemPrice}
 总计：${halfDiscountPrice.totalPrice}元
 ===================================`;
 
-} else {
-return ` 
+  } else {
+    return ` 
 ============= 订餐明细 =============
 ${itemPrice}
 -----------------------------------
 总计：${reduceMoneyPrice.totalPrice}元
 ===================================`;
-}
+  }
 }
 
 
